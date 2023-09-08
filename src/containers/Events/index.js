@@ -13,25 +13,36 @@ const EventList = () => {
   const { data, error } = useData();
   const [type, setType] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+
+  // const filteredEvents = ((!type ? data?.events : data?.events) || []).filter(
+  //   (event, index) => {
+  //     if (
+  //       (currentPage - 1) * PER_PAGE <= index &&
+  //       PER_PAGE * currentPage > index
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   }
+  // );
+  /* - - - - - - - - - - */
+  /* Sert à traiter des événements filtrés et paginés */
   const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
-  ).filter((event, index) => {
-    if (
-      (currentPage - 1) * PER_PAGE <= index &&
-      PER_PAGE * currentPage > index
-    ) {
-      return true;
-    }
-    return false;
-  });
+    type
+      ? (data?.events || []).filter((event) => event.type === type)
+      : data?.events || []
+  ).slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  /* - - - - - - - - - - */
+
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
   };
   const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
   const typeList = new Set(data?.events.map((event) => event.type));
+  console.log(typeList);
+
   return (
     <>
       {error && <div>An error occured</div>}
@@ -45,15 +56,15 @@ const EventList = () => {
             onChange={(value) => (value ? changeType(value) : changeType(null))}
           />
           <div id="events" className="ListContainer">
-            {filteredEvents.map((event) => (
-              <Modal key={event.id} Content={<ModalEvent event={event} />}>
+            {filteredEvents.map((element) => (
+              <Modal key={element.id} Content={<ModalEvent event={element} />}>
                 {({ setIsOpened }) => (
                   <EventCard
                     onClick={() => setIsOpened(true)}
-                    imageSrc={event.cover}
-                    title={event.title}
-                    date={new Date(event.date)}
-                    label={event.type}
+                    imageSrc={element.cover}
+                    title={element.title}
+                    date={new Date(element.date)}
+                    label={element.type}
                   />
                 )}
               </Modal>

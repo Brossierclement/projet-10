@@ -13,19 +13,29 @@ const Select = ({
   label,
   type = "normal",
 }) => {
-  const [value, setValue] = useState();
+  // const [value, setValue] = useState();
+  const [value, setValue] = useState(selection[0]);
+
   const [collapsed, setCollapsed] = useState(true);
+
   const changeValue = (newValue) => {
-    onChange();
     setValue(newValue);
-    setCollapsed(newValue);
+
+    // setCollapsed(newValue);
+    setCollapsed(true);
+
+    // onChange();
+    onChange(newValue);
   };
   return (
     <div className={`SelectContainer ${type}`} data-testid="select-testid">
       {label && <div className="label">{label}</div>}
       <div className="Select">
         <ul>
-          <li className={collapsed ? "SelectTitle--show" : "SelectTitle--hide"}>
+          <li
+            className={collapsed ? "SelectTitle--show" : "SelectTitle--hide"}
+            onClick={() => setCollapsed(!collapsed)}
+          >
             {value || (!titleEmpty && "Toutes")}
           </li>
           {!collapsed && (
@@ -88,7 +98,7 @@ Select.propTypes = {
   titleEmpty: PropTypes.bool,
   label: PropTypes.string,
   type: PropTypes.string,
-}
+};
 
 Select.defaultProps = {
   onChange: () => null,
@@ -96,6 +106,6 @@ Select.defaultProps = {
   label: "",
   type: "normal",
   name: "select",
-}
+};
 
 export default Select;

@@ -11,13 +11,20 @@ const Slider = () => {
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
   const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length ? index + 1 : 0),
-      5000
+    // setTimeout(
+    //   () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0),
+    //   5000
+    // );
+    setIndex(
+      (prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0)
+      /* ajout du -1 pour ne pas boucler une fois dans le vide */
     );
   };
   useEffect(() => {
-    nextCard();
+    const interval = setInterval(nextCard, 5000);
+    return () => {
+      clearInterval(interval);
+    };
   });
   return (
     <div className="SlideCardList">
@@ -40,12 +47,15 @@ const Slider = () => {
           </div>
           <div className="SlideCard__paginationContainer">
             <div className="SlideCard__pagination">
-              {byDateDesc.map((_, radioIdx) => (
+              {byDateDesc.map((evt, radioIdx) => (
                 <input
-                  key={`${event.id}`}
+                  // key={`${event.id}`}
+                  key={evt.id}
                   type="radio"
                   name="radio-button"
-                  checked={idx === radioIdx}
+                  // checked={idx === radioIdx}
+                  checked={index === radioIdx}
+                  onChange={() => setIndex(radioIdx)}
                 />
               ))}
             </div>
